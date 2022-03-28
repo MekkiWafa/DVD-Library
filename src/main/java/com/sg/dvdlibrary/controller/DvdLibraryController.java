@@ -4,20 +4,22 @@ package com.sg.dvdlibrary.controller;
   @author Wafa Mekki
  */
 
-import com.sg.dvdlibrary.dao.DvdLibraryDaoException;
+import com.sg.dvdlibrary.dao.DvdLibraryPersistenceException;
 import com.sg.dvdlibrary.dto.Dvd;
+import com.sg.dvdlibrary.service.DvdLibraryDataValidationException;
+import com.sg.dvdlibrary.service.DvdLibraryDuplicateIdException;
+import com.sg.dvdlibrary.service.DvdLibraryServiceLayer;
 import com.sg.dvdlibrary.ui.DvdLibraryView;
-import com.sg.dvdlibrary.dao.DvdLibraryDao;
 
-import java.util.*;
+import java.util.List;
 
 public class DvdLibraryController {
     private DvdLibraryView view;
-    private DvdLibraryDao dao;
+    private DvdLibraryServiceLayer service;
 
-    public DvdLibraryController(DvdLibraryView view, DvdLibraryDao dao) {
+    public DvdLibraryController(DvdLibraryView view, DvdLibraryServiceLayer service) {
         this.view = view;
-        this.dao = dao;
+        this.service = service;
     }
 
     public void run() {
@@ -32,19 +34,15 @@ public class DvdLibraryController {
                         break;
                     case 2:
                         addDvd();
-                        // continueAdding();
                         break;
                     case 3:
                         viewDvd();
-                        // displayDvdByTitle();
                         break;
                     case 4:
                         removeDvd();
-                        //  continueRemoving();
                         break;
                     case 5:
                         editDvd();
-                        //  continueEditing();
                         break;
                     case 6:
                         searchDvdByTitle();
@@ -57,7 +55,7 @@ public class DvdLibraryController {
                 }
             }
             exitMessage();
-        } catch (DvdLibraryDaoException e) {
+        } catch (DvdLibraryPersistenceException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
@@ -66,74 +64,99 @@ public class DvdLibraryController {
         return view.printMenuAndGetSelection();
     }
 
-    private void addDvd() throws DvdLibraryDaoException {
+    private void addDvd() throws DvdLibraryPersistenceException {
         view.displayAddDvdBanner();
-        Dvd newDvd = view.getNewDvdInfo();
-        dao.addDvd(newDvd.getDvdId(), newDvd);
-        view.displayAddSuccessBanner();
+        boolean hasErrors = false;
+        do {
+            Dvd newDvd = view.getNewDvdInfo();
+            try {
+                service.addDvd(newDvd);
+                view.displayAddSuccessBanner();
+                hasErrors = false;
+            } catch (DvdLibraryDataValidationException | DvdLibraryDuplicateIdException e) {
+                hasErrors = true;
+                view.displayErrorMessage(e.getMessage());
+            }
+        } while (hasErrors);
     }
 
-    private void listDvds() throws DvdLibraryDaoException {
+    private void listDvds() throws DvdLibraryPersistenceException {
         view.displayListAllDvdBanner();
-        List<Dvd> dvdList = dao.getAllDvds();
+        List<Dvd> dvdList = service.getAllDvds();
         view.displayDvdList(dvdList);
     }
 
 
-    private void viewDvd() throws DvdLibraryDaoException {
+    private void viewDvd() throws DvdLibraryPersistenceException {
         view.displayDisplayDvdBanner();
         String dvdId = view.getDvdIdChoice();
-        Dvd dvd = dao.getDvd(dvdId);
+        Dvd dvd = service.getDvd(dvdId);
         view.displayDvd(dvd);
     }
 
-    private void removeDvd() throws DvdLibraryDaoException {
+    private void removeDvd() throws DvdLibraryPersistenceException {
         view.displayRemoveDvdBanner();
         String dvdId = view.getDvdIdChoice();
-        Dvd removedDvd = dao.removeDvd(dvdId);
+        Dvd removedDvd = service.removeDvd(dvdId);
         view.displayRemoveResult(removedDvd);
     }
 
-    private void editDvd() throws DvdLibraryDaoException {
+    private void editDvd() throws DvdLibraryPersistenceException {
         view.displayEditDvdBanner();
         String oldDvdId = view.getDvdIdChoice();
-        Dvd oldDvd = dao.getDvd(oldDvdId);
+        Dvd oldDvd = service.getDvd(oldDvdId);
         boolean keepGoing = true;
         Dvd editedDvd = null;
-        while (keepGoing) {
-            int editMenuSelection = getEditMenuSelection(oldDvd);
-            switch (editMenuSelection) {
-                case 1:
-                    editedDvd = editDvdTitle(oldDvd);
-                    break;
-                case 2:
-                    editedDvd = editReleaseDate(oldDvd);
-                    break;
-                case 3:
-                    editedDvd = editDirectorName(oldDvd);
-                    break;
-                case 4:
-                    editedDvd = editRating(oldDvd);
-                    break;
-                case 5:
-                    editedDvd = editStudio(oldDvd);
-                    break;
-                case 6:
-                    editedDvd = editNotes(oldDvd);
-                    break;
-                case 7:
-                    editedDvd = editAllData(oldDvd);
-                    break;
-                case 8:
-                    keepGoing = false;
-                    break;
-                default:
-                    unknownCommand();
-            }
 
-        }
-        dao.editDvd(editedDvd);
-        view.displayEditSuccessBanner();
+        boolean hasErrors = false;
+        do {
+            try {
+                while (keepGoing) {
+                    int editMenuSelection = getEditMenuSelection(oldDvd);
+                    switch (editMenuSelection) {
+                        case 1:
+                            editedDvd = editDvdTitle(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 2:
+                            editedDvd = editReleaseDate(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 3:
+                            editedDvd = editDirectorName(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 4:
+                            editedDvd = editRating(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 5:
+                            editedDvd = editStudio(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 6:
+                            editedDvd = editNotes(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 7:
+                            editedDvd = editAllData(oldDvd);
+                            service.editDvd(editedDvd);
+                            break;
+                        case 8:
+                            service.editDvd(editedDvd);
+                            keepGoing = false;
+                            break;
+                        default:
+                            unknownCommand();
+                    }
+                }
+                view.displayEditSuccessBanner();
+                hasErrors = false;
+            } catch (DvdLibraryDataValidationException e) {
+                hasErrors = true;
+                view.displayErrorMessage(e.getMessage());
+            }
+        } while (hasErrors);
     }
 
     private Dvd editDvdTitle(Dvd oldDvd) {
@@ -164,10 +187,10 @@ public class DvdLibraryController {
         return view.getUpdatedDvdInfo(oldDvd);
     }
 
-    private void searchDvdByTitle() throws DvdLibraryDaoException {
+    private void searchDvdByTitle() throws DvdLibraryPersistenceException {
         view.displaySearchDvdBanner();
         String dvdTitle = view.getDvdTitleChoice();
-        List<Dvd> dvdList = dao.getDvdByTitle(dvdTitle);
+        List<Dvd> dvdList = service.getDvdByTitle(dvdTitle);
         view.displayDvdList(dvdList);
 
     }

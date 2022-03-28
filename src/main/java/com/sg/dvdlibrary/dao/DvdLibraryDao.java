@@ -15,19 +15,18 @@ public interface DvdLibraryDao {
      * dvd id it will return that dvd object, otherwise it will
      * return null.
      *
-     * @param dvdId id with which student is to be associated
      * @param dvd   student to be added to the roster
      * @return the DVD object previously associated with the given
      * DVD id if it exists, null otherwise
      */
-    Dvd addDvd(String dvdId, Dvd dvd) throws DvdLibraryDaoException;
+    Dvd addDvd(Dvd dvd) throws DvdLibraryPersistenceException;
 
     /**
      * Returns a list of all DVDs in the library.
      *
      * @return list containing all DVDs in the library.
      */
-    List<Dvd> getAllDvds() throws DvdLibraryDaoException;
+    List<Dvd> getAllDvds() throws DvdLibraryPersistenceException;
 
     /**
      * Returns the dvd object associated with the given dvd id.
@@ -37,7 +36,7 @@ public interface DvdLibraryDao {
      * @return the DVD object associated with the given dvd id,
      * null if no such dvd exists
      */
-    Dvd getDvd(String dvdId) throws DvdLibraryDaoException;
+    Dvd getDvd(String dvdId) throws DvdLibraryPersistenceException;
 
     /**
      * Returns the collection of DVD object associated with the given title.
@@ -47,7 +46,7 @@ public interface DvdLibraryDao {
      * @return the DVD object associated with the given title,
      * null if no such DVD exists
      */
-    List<Dvd> getDvdByTitle(String dvdTitle) throws DvdLibraryDaoException;
+    List<Dvd> getDvdByTitle(String dvdTitle) throws DvdLibraryPersistenceException;
 
     /**
      * Removes from the library the dvd associated with the given id.
@@ -58,7 +57,7 @@ public interface DvdLibraryDao {
      * @return Dvd object that was removed or null if no dvd
      * was associated with the given dvd id
      */
-    Dvd removeDvd(String dvdId) throws DvdLibraryDaoException;
+    Dvd removeDvd(String dvdId) throws DvdLibraryPersistenceException;
 
     /**
      * Returns the updated dvd object.
@@ -68,6 +67,6 @@ public interface DvdLibraryDao {
      * @return the updated DVD object,
      * null if no such dvd exists
      */
-    Dvd editDvd(Dvd editedDvd) throws DvdLibraryDaoException;
+    Dvd editDvd(Dvd editedDvd) throws DvdLibraryPersistenceException;
 }
 
