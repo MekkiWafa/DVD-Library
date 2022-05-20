@@ -1,5 +1,7 @@
 package com.sg.dvdlibrary.ui;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
@@ -195,6 +197,25 @@ public class UserIOConsoleImpl implements UserIO {
             result = readDouble(msgPrompt);
         } while (result < min || result > max);
         return result;
+    }
+
+    @Override
+    public LocalDate readDate(String prompt) {
+        boolean invalidInput = true;
+        LocalDate date = null;
+        while (invalidInput) {
+            try {
+                // print the message msgPrompt
+                String stringValue = this.readString(prompt);
+                // Get the input line, and try and parse
+                date = LocalDate.parse(stringValue);
+                invalidInput = false; // or you can use 'break;'
+            } catch (DateTimeParseException e) {
+                // If it explodes, it'll go here and do this.
+                this.print("Input error. Please try again.");
+            }
+        }
+        return date;
     }
 
 }

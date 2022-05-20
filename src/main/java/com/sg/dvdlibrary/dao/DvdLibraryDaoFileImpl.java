@@ -3,17 +3,27 @@ package com.sg.dvdlibrary.dao;
 import com.sg.dvdlibrary.dto.Dvd;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Wafa Mekki
  */
 public class DvdLibraryDaoFileImpl implements DvdLibraryDao {
-    private static final String LIBRARY_FILE = "library.txt";
+    private final String LIBRARY_FILE;
     private static final String DELIMITER = ";";
     private Map<String, Dvd> dvds = new HashMap<>();
 
+    public DvdLibraryDaoFileImpl() {
+        LIBRARY_FILE = "library.txt";
+    }
 
+    public DvdLibraryDaoFileImpl(String LibraryTextFile) {
+        LIBRARY_FILE = LibraryTextFile;
+    }
     @Override
     public Dvd addDvd(Dvd dvd) throws DvdLibraryPersistenceException {
         loadLibrary();
@@ -61,13 +71,14 @@ public class DvdLibraryDaoFileImpl implements DvdLibraryDao {
         return updatedDvd;
     }
 
+
     private Dvd unmarshallDvd(String dvdAsText) {
         String[] dvdTokens = dvdAsText.split(DELIMITER);
 
         // create a new Dvd object to satisfy
         // the requirements of the Dvd constructor.
 
-        return new Dvd(dvdTokens[0], dvdTokens[1], dvdTokens[2], dvdTokens[3],
+        return new Dvd(dvdTokens[0], dvdTokens[1], LocalDate.parse(dvdTokens[2]), dvdTokens[3],
                 dvdTokens[4], dvdTokens[5], dvdTokens[6]);
     }
 
@@ -141,7 +152,73 @@ public class DvdLibraryDaoFileImpl implements DvdLibraryDao {
                     "Could not save DVD data.", e);
         }
         // Clean up
+    }
 
+    @Override
+    public List<Dvd> getRecentDvds(int n) throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .sorted(Comparator.comparing(Dvd::getReleaseDate).reversed())
+                .collect(Collectors.toList())
+                .subList(0, n);
+    }
+
+    @Override
+    public List<Dvd> getDvdsByMpaa(String mpaa) throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .filter((dvd) -> dvd.getMpaaRating().toLowerCase().equals(mpaa.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Dvd> getDvdsByDirector(String director) throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .filter((dvd) -> dvd.getDirectorName().toLowerCase().contains(director.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, List<Dvd>> getDvdsByDirectorSortedByMpaa(String director) throws DvdLibraryPersistenceException {
+        loadLibrary();
+        Map<String, List<Dvd>> dvdMpaa = dvds.values().stream()
+                .filter((dvd) -> dvd.getDirectorName().toLowerCase().contains(director.toLowerCase()))
+                .collect(Collectors.groupingBy((dvd) -> dvd.getMpaaRating()));
+        return dvdMpaa;
+    }
+
+    @Override
+    public List<Dvd> getDvdsByStudio(String studio) throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .filter((dvd) -> dvd.getStudio().toLowerCase().contains(studio.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getAveargeAge() throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .mapToDouble(dvd -> Period.between(LocalDate.now(), dvd.getReleaseDate()).get(ChronoUnit.YEARS))
+                .average()
+                .getAsDouble();
+    }
+
+    @Override
+    public Optional<Dvd> getNewestDvd() throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .sorted(Comparator.comparing(Dvd::getReleaseDate).reversed())
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Dvd> getOldestDvd() throws DvdLibraryPersistenceException {
+        loadLibrary();
+        return dvds.values().stream()
+                .sorted(Comparator.comparing(Dvd::getReleaseDate))
+                .findFirst();
     }
 
 }

@@ -3,6 +3,8 @@ package com.sg.dvdlibrary.dao;
 import com.sg.dvdlibrary.dto.Dvd;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Wafa Mekki
@@ -68,5 +70,77 @@ public interface DvdLibraryDao {
      * null if no such dvd exists
      */
     Dvd editDvd(Dvd editedDvd) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns the movies released in the last N years.
+     * Returns null if no such dvd exists
+     *
+     * @param n number of last years
+     * @return the the movies released in the last N years,
+     * null if no such dvd exists
+     */
+    List<Dvd> getRecentDvds(int n) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns all the movies with a given MPAA rating.
+     * Returns null if no such dvd exists
+     *
+     * @param mpaa MPAA rating
+     * @return the movies with a given MPAA rating,
+     * null if no such dvd exists
+     */
+    List<Dvd> getDvdsByMpaa(String mpaa) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns all the movies by a given director.
+     * Returns null if no such dvd exists
+     *
+     * @param director director name
+     * @return the movies by a given director,
+     * null if no such dvd exists
+     */
+    List<Dvd> getDvdsByDirector(String director) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns all the movies by a given director and sorted into separate data structures by MPAA rating
+     * Returns null if no such dvd exists
+     *
+     * @param director director name
+     * @return the movies by a given director and sorted into separate data structures by MPAA rating,
+     * null if no such dvd exists
+     */
+    Map<String, List<Dvd>> getDvdsByDirectorSortedByMpaa(String director) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns all the movies released by a particular studio
+     * Returns null if no such dvd exists
+     *
+     * @param studio studio
+     * @return all the movies released by a particular studio,
+     * null if no such dvd exists
+     */
+    List<Dvd> getDvdsByStudio(String studio) throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns the average age of the movies in the collection
+     *
+     * @return all the movies released by a particular studio,
+     */
+    double getAveargeAge() throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns the newest movie in your collection.
+     *
+     * @return the newest movie in your collection
+     */
+    Optional<Dvd> getNewestDvd() throws DvdLibraryPersistenceException;
+
+    /**
+     * Returns the oldest movie in your collection.
+     *
+     * @return the oldest movie in your collection
+     */
+    Optional<Dvd> getOldestDvd() throws DvdLibraryPersistenceException;
+
 }
 

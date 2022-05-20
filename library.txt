@@ -1,7 +1,6 @@
-1;Matrix;1999;PG;Lilly Wachowski;Warner Bros;Action film
-2;Toy Story 1;2002;PG;John Lasseter;Pixar Animation Studios;Good film!
-3;Toy Story 3;2002;PG;John Lasseter;Pixar Animation Studios;Good
-03;zdeza;farz;faz;fa;faf;fa
-4;Toy Story 3;2001; PG;John Lasseter;Pixar Animation Studios;Favourite Pixar film!
-5;Toy Story 2;2000;PG;John Lasseter;Pixar Animation Studios;Amazing film!
-6;Focus;2015;R;Glenn Ficarra;Kramer & Sigman Films; Will Smith's best performance!
+1;Matrix;1999-01-01;PG;Lilly Wachowski;Warner Bros;Action film
+2;Toy Story 1;2002-02-02;PG;John Lasseter;Pixar Animation Studios;Good film!
+3;Toy Story 3;2002-03-03;PG;John Lasseter;Pixar Animation Studios;Good
+4;Toy Story 4;2001-09-11; PG;John Lasseter;Pixar Animation Studios;Favourite Pixar film!
+5;Toy Story 2;2000-05-05;PG;John Lasseter;Pixar Animation Studios;Amazing film!
+6;Focus;2015-06-06;R;Glenn Ficarra;Kramer & Sigman Films; Will Smith's best performance!

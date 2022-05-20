@@ -48,6 +48,18 @@ public class DvdLibraryController {
                         searchDvdByTitle();
                         break;
                     case 7:
+                        searchDvdByDirector();
+                        break;
+                    case 8:
+                        searchDvdByMppa();
+                        break;
+                    case 9:
+                        searchDvdByStudio();
+                        break;
+                    case 10:
+                        getRecentDvds();
+                        break;
+                    case 11:
                         keepGoing = false;
                         break;
                     default:
@@ -188,11 +200,42 @@ public class DvdLibraryController {
     }
 
     private void searchDvdByTitle() throws DvdLibraryPersistenceException {
-        view.displaySearchDvdBanner();
+        view.displaySearchDvdByTitleBanner();
         String dvdTitle = view.getDvdTitleChoice();
         List<Dvd> dvdList = service.getDvdByTitle(dvdTitle);
         view.displayDvdList(dvdList);
 
+    }
+
+    private void searchDvdByDirector() throws DvdLibraryPersistenceException {
+        view.displaySearchDvdByDirectorBanner();
+        String dvdDirector = view.getDvdDirectorChoice();
+        List<Dvd> dvdList = service.getDvdsByDirector(dvdDirector);
+        view.displayDvdList(dvdList);
+
+    }
+
+    private void searchDvdByMppa() throws DvdLibraryPersistenceException {
+        view.displaySearchDvdByMpaaBanner();
+        String dvdMpaa = view.getDvdMPAAChoice();
+        List<Dvd> dvdList = service.getDvdsByMpaa(dvdMpaa);
+        view.displayDvdList(dvdList);
+
+    }
+
+    private void searchDvdByStudio() throws DvdLibraryPersistenceException {
+        view.displaySearchDvdByStudioBanner();
+        String dvdStudio = view.getDvdStudioChoice();
+        List<Dvd> dvdList = service.getDvdsByStudio(dvdStudio);
+        view.displayDvdList(dvdList);
+
+    }
+
+    private void getRecentDvds() throws DvdLibraryPersistenceException {
+        view.displayRecentDvdBanner();
+        int n = view.getDvdListSize();
+        List<Dvd> dvdList = service.getRecentDvds(n);
+        view.displayDvdList(dvdList);
     }
 
     private int getEditMenuSelection(Dvd oldDvd) {

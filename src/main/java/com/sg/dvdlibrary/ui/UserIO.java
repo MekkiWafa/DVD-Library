@@ -1,5 +1,7 @@
 package com.sg.dvdlibrary.ui;
 
+import java.time.LocalDate;
+
 /**
  * @author Wafa Mekki
  */
@@ -23,5 +25,7 @@ public interface UserIO {
     long readLong(String prompt, long min, long max);
 
     String readString(String prompt);
+
+    LocalDate readDate(String prompt);
 
 }
