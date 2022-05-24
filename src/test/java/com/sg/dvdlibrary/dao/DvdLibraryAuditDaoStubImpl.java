@@ -1,4 +1,4 @@
-package com.sg.dvdlibrary.service;
+package com.sg.dvdlibrary.dao;
 
 import com.sg.dvdlibrary.dao.DvdLibraryAuditDao;
 import com.sg.dvdlibrary.dao.DvdLibraryPersistenceException;

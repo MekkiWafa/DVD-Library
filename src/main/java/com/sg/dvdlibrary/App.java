@@ -15,20 +15,29 @@ import com.sg.dvdlibrary.service.DvdLibraryServiceLayerImpl;
 import com.sg.dvdlibrary.ui.DvdLibraryView;
 import com.sg.dvdlibrary.ui.UserIO;
 import com.sg.dvdlibrary.ui.UserIOConsoleImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Wafa Mekki
  */
 public class App {
     public static void main(String[] args) {
+        //Implement DI using XML configuration
+        ApplicationContext appContext
+                = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
 
-        UserIO myIo = new UserIOConsoleImpl();
+        DvdLibraryController controller = appContext.getBean("controller", DvdLibraryController.class);
+        controller.run();
+
+        //Without Spring framework
+        /*UserIO myIo = new UserIOConsoleImpl();
         DvdLibraryView myView = new DvdLibraryView(myIo);
         DvdLibraryDao myDao = new DvdLibraryDaoFileImpl();
         DvdLibraryAuditDao myAuditDao = new DvdLibraryAuditDaoFileImpl();
         DvdLibraryServiceLayer myService = new DvdLibraryServiceLayerImpl(myDao, myAuditDao);
         DvdLibraryController controller = new DvdLibraryController(myView, myService);
-        controller.run();
+        controller.run();*/
     }
 }
 
