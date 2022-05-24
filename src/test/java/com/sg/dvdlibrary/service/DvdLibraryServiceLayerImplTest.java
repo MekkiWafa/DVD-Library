@@ -3,6 +3,8 @@ package com.sg.dvdlibrary.service;
 import com.sg.dvdlibrary.dao.*;
 import com.sg.dvdlibrary.dto.Dvd;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.time.LocalDate;
 
@@ -12,10 +14,17 @@ class DvdLibraryServiceLayerImplTest {
     private DvdLibraryServiceLayer service;
 
     public DvdLibraryServiceLayerImplTest() {
-        DvdLibraryDao dao = new DvdLibraryDaoStubImpl();
+        // wire the Service Layer with stub implementations of the Dao and
+        // Audit Dao
+       /* DvdLibraryDao dao = new DvdLibraryDaoStubImpl();
         DvdLibraryAuditDao auditDao = new DvdLibraryAuditDaoStubImpl();
 
-        service = new DvdLibraryServiceLayerImpl(dao, auditDao);
+        service = new DvdLibraryServiceLayerImpl(dao, auditDao);*/
+        ApplicationContext ctx =
+                new ClassPathXmlApplicationContext("applicationContext.xml");
+        service =
+                ctx.getBean("serviceLayer", DvdLibraryServiceLayer.class);
+
     }
 
     @Test

@@ -1,7 +1,5 @@
 package com.sg.dvdlibrary.dao;
 
-import com.sg.dvdlibrary.dao.DvdLibraryAuditDao;
-import com.sg.dvdlibrary.dao.DvdLibraryPersistenceException;
 
 public class DvdLibraryAuditDaoStubImpl implements DvdLibraryAuditDao {
     @Override
